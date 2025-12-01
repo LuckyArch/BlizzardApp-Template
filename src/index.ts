@@ -1,4 +1,4 @@
-import { Blizzard, logger } from "blizzardts";
+import { Blizzard, cors, logger, serveStatic } from "blizzardts";
 
 const app = Blizzard();
 const port = 3000;
@@ -8,23 +8,27 @@ app.use(async (c, next) => {
   const res = await next();
   const end = performance.now();
   
-  // Capture status from response if available
   const status = res instanceof Response ? res.status : 500;
-  
   c.utils.logger.request(c.req.method, c.req.path, status, end - start);
-  
   return res;
 });
 
+app.use(cors());
+app.use(serveStatic("./public"));
+
 app.get("/", (c) => {
+  return c.html("<h1>Hello World</h1>");
+});
+
+app.get("/api", (c) => {
   return c.json({
-    message: "Welcome to BlizzardTS Server",
+    message: "Welcome to BlizzardTS API",
     status: "running",
     timestamp: new Date().toISOString(),
   });
 });
 
-app.get("/users/:id", (c) => {
+app.get("/api/users/:id", (c) => {
   const { id } = c.req.params;
   return c.json({
     id,

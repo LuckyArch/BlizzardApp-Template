@@ -1,0 +1,10 @@
+---
+import { format } from "./../src/index.ts";
+const title = "Hello World";
+const items = ["A", "B", "C"];
+console.log(items);
+---
+<h1>{title}</h1>
+<ul>
+  {items.map(item => `<li>${item}</li>`).join("")}
+</ul>
