@@ -1,0 +1,7 @@
+---
+var title = "Page with Layout";
+---
+<layout src="./layout.blizzard" />
+
+<h1>Hello from Page</h1>
+<p>This content should be inside the layout.</p>

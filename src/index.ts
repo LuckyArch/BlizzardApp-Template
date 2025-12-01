@@ -1,25 +1,21 @@
-import { Blizzard, cors, logger, serveStatic } from "blizzardts";
+import { Blizzard, cors, logger, serveStatic, loggerUtils } from "blizzardts";
 
-const app = Blizzard();
+const app = Blizzard({
+  root: "./public"
+});
 const port = 3000;
 
-app.use(async (c, next) => {
-  const start = performance.now();
-  const res = await next();
-  const end = performance.now();
-  
-  const status = res instanceof Response ? res.status : 500;
-  c.utils.logger.request(c.req.method, c.req.path, status, end - start);
-  return res;
-});
+// Use the new built-in logger middleware
+app.use(logger());
 
 app.use(cors());
 app.use(serveStatic("./public"));
 
 app.get("/", (c) => {
-  return c.html("<h1>Hello World</h1>");
+  return c.render("index.blizzard")
 });
 
+app.get("/layout", (c) => c.render("page.blizzard"));
 app.get("/api", (c) => {
   return c.json({
     message: "Welcome to BlizzardTS API",
@@ -46,7 +42,7 @@ app.post("/data", async (c) => {
   });
 });
 
-logger.startup({ port });
+loggerUtils.startup({ port, version: "0.1.3" });
 
 export default {
   port,
